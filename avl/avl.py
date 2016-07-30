@@ -41,7 +41,7 @@ class AVLNode(object):
     'A node in a self-balancing tree'
     def __init__(self, key):
         self.key = key
-        # self.height = 0
+        self.height = 0
         self.left = None
         self.right = None
         self.parent = None
@@ -72,11 +72,10 @@ class AVLNode(object):
 
         return verfied and parcheck
 
-    @property
-    def height(self):
+    def update_height(self):
         lheight = self.left.height if self.left is not None else 0
         rheight = self.right.height if self.right is not None else 0
-        return max(lheight, rheight) + 1
+        self.height = max(lheight, rheight) + 1
 
     @property
     def children(self):
@@ -199,7 +198,7 @@ class AVLTree(object):
             parent = parent.parent
 
     def rebalance_node(self, node):
-        # node.update_height()
+        node.update_height()
         if node.is_balanced():
             return
 
@@ -404,6 +403,8 @@ def rotate_right(root):
     elif pivot.parent.right is root:
         pivot.parent.right = pivot
 
+    root.update_height()
+    pivot.update_height()
 
 def rotate_left(root):
 
@@ -425,6 +426,8 @@ def rotate_left(root):
         pivot.parent.right = pivot
     else:
         raise KeyError
+    root.update_height()
+    pivot.update_height()
 
 
 def rotate_double_left(root):
