@@ -94,19 +94,6 @@ class AVLNode(object):
     def is_balanced(self):
         return -1 <= self.balance <= 1
 
-    # def max_child_height(self):
-    #     if self.left and self.right:
-    #         return max(self.left.height, self.right.height)
-    #     elif self.left and not self.right:
-    #         return self.left.height
-    #     elif self.right and not self.left:
-    #         return self.right.height
-    #     else:
-    #         return 0
-
-    # def update_height(self):
-    #     self.height = self.max_child_height() + 1
-
     def _traverse_forward(self):
         if self.left is not None:
             yield from self.left._traverse_forward()
@@ -142,8 +129,6 @@ class AVLTree(object):
             yield from self.root._traverse_reverse()
         else:
             yield from self.root._traverse_forward()
-
-
 
     def size(self):
         return sum(1 for node in self.traverse())
