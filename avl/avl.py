@@ -30,6 +30,11 @@ class Stack(object):
     def empty(self):
         return self.front is None
 
+    def reverse(self):
+        l = list(self)
+        for x in l:
+            self.push(x)
+
     def __iter__(self):
         item = self.pop()
         while item is not None:
@@ -171,6 +176,11 @@ class AVLTree(object):
                 cur_node = cur_node.left
             elif key == cur_node.key:
                 break
+        return s
+
+    def path_to_node(self, key):
+        s = self.path_to_root(key)
+        s.reverse()
         return s
 
     def insert(self, key):

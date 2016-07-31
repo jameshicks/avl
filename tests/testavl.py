@@ -9,6 +9,10 @@ def test_stack():
     assert not bool(Stack())
     assert list(s) == [4,3,2,1]
 
+    s = Stack([1,2,3,4])
+    s.reverse()
+    assert list(s) == [1,2,3,4]
+
 def test_right_rotation():
     a = AVLNode(1)
     b = AVLNode(2)
@@ -259,9 +263,14 @@ def test_insertion():
 
 def test_path():
     tree = AVLTree.from_keys([69, 60, 22, 91, 19, 71, 96, 27, 84, 43])
+    assert tree.root.key == 60
 
     expected = [84,91,71,60]
     observed = [x.key for x in tree.path_to_root(84)]
+    assert observed == expected
+
+    expected = expected[::-1]
+    observed = [x.key for x in tree.path_to_node(84)]
     assert observed == expected
 
 def test_traverse():
