@@ -1,8 +1,11 @@
 import sys
 assert sys.version[0] == '3'
 
+
 class Stack(object):
+
     'A first-in last-out datastructure'
+
     def __init__(self, starts=None):
         self.front = None
         if starts:
@@ -33,15 +36,19 @@ class Stack(object):
             yield item
             item = self.pop()
 
+
 class StackItem(object):
     __slots__ = ['obj', 'following']
+
     def __init__(self, obj, following=None):
         self.obj = obj
         self.following = following
 
 
 class AVLNode(object):
+
     'A node in a self-balancing tree'
+
     def __init__(self, key):
         self.key = key
         self.height = 0
@@ -110,6 +117,7 @@ class AVLNode(object):
         yield self
         if self.left is not None:
             yield from self.left._traverse_reverse()
+
 
 class AVLTree(object):
 
@@ -247,7 +255,7 @@ class AVLTree(object):
                 ancestor.right = None
             else:
                 ancestor.left = None
-        
+
         elif node.left is not None and node.right is None:
             # One child A
             ancestor = node.parent
@@ -260,13 +268,13 @@ class AVLTree(object):
             ancestor.left = child
 
         elif node.left is None and node.right is not None:
-            # One child B: move the 
+            # One child B: move the
             ancestor = node.parent
             child = node.right
 
             if is_root(node):
                 self.root = child
-                return    
+                return
             ancestor.right = child
 
         else:
@@ -274,11 +282,11 @@ class AVLTree(object):
             successor = node
             while successor.right:
                 successor = successor.right
-            
+
             print('Successor is {}'.format(successor))
 
             ancestor = successor.parent
-            successor.parent = node.parent 
+            successor.parent = node.parent
 
             if node.parent is not None:
                 if node is node.parent.left:
@@ -288,7 +296,7 @@ class AVLTree(object):
 
             # The max key on the left side will always be a right leaf
             ancestor.right = None
-            
+
             if is_root(node):
                 self.root = successor
 
@@ -336,30 +344,29 @@ class AVLTree(object):
     def max(self):
         return self.max_node().key
 
-
     def intersection(self, other):
         t1 = Stack(self.traverse(reverse=True))
         t2 = Stack(other.traverse(reverse=True))
 
-        a,b = t1.pop(), t2.pop()
+        a, b = t1.pop(), t2.pop()
 
         ntree = AVLTree()
         while a is not None and b is not None:
             if a.key == b.key:
                 ntree.insert(a.key)
-                a,b = t1.pop(), t2.pop()
+                a, b = t1.pop(), t2.pop()
             elif a.key < b.key:
                 a = t1.pop()
             else:
                 b = t2.pop()
 
         return ntree
-    
+
     def union(self, other):
         t1 = Stack(self.traverse(reverse=True))
         t2 = Stack(other.traverse(reverse=True))
 
-        a,b = t1.pop(), t2.pop()
+        a, b = t1.pop(), t2.pop()
 
         ntree = AVLTree()
 
@@ -367,19 +374,19 @@ class AVLTree(object):
             if a is None:
                 ntree.insert(b.key)
                 b = t2.pop()
-            
+
             elif b is None:
                 ntree.insert(a.key)
                 a = t1.pop()
-            
+
             elif a.key == b.key:
                 ntree.insert(a.key)
-                a,b = t1.pop(), t2.pop()
-            
+                a, b = t1.pop(), t2.pop()
+
             elif a.key < b.key:
                 ntree.insert(a.key)
                 a = t1.pop()
-            
+
             else:
                 ntree.insert(b.key)
                 b = t2.pop()
@@ -387,6 +394,8 @@ class AVLTree(object):
         return ntree
 
 # Node manipulation functions
+
+
 def rotate_right(root):
     pivot = root.left
     root.left = pivot.right
@@ -406,6 +415,7 @@ def rotate_right(root):
 
     root.update_height()
     pivot.update_height()
+
 
 def rotate_left(root):
 
