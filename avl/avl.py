@@ -10,7 +10,7 @@ class Stack(object):
                 self.push(val)
 
     def __bool__(self):
-        return self.front is None
+        return self.front is not None
 
     def push(self, val):
         item = StackItem(val, following=self.front)
