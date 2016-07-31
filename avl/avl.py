@@ -24,6 +24,9 @@ class Stack(object):
         self.front = popped.following
         return popped.obj
 
+    def empty(self):
+        return self.front is None
+
     def __iter__(self):
         item = self.pop()
         while item is not None:

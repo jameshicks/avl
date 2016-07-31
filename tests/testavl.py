@@ -5,7 +5,10 @@ from avl import rotate_double_left, rotate_double_right
 
 def test_stack():
     s = Stack([1,2,3,4])
+    assert bool(s)
+    assert not bool(Stack())
     assert list(s) == [4,3,2,1]
+
 def test_right_rotation():
     a = AVLNode(1)
     b = AVLNode(2)
