@@ -254,6 +254,13 @@ def test_insertion():
     assert tree.root.left.left.key == 5
     assert tree.root.left.right.key == 7
 
+def test_path():
+    tree = AVLTree.from_keys([69, 60, 22, 91, 19, 71, 96, 27, 84, 43])
+
+    expected = [84,91,71,60]
+    observed = [x.key for x in tree.path_to_root(84)]
+    assert observed == expected
+
 def test_traverse():
     keys = [10, 5, 3, 18, 2]
     tree = AVLTree.from_keys([10, 5, 3, 18, 2])

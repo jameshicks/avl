@@ -149,6 +149,19 @@ class AVLTree(object):
                 node = node.right
         raise KeyError('Node not found!')
 
+    def path_to_root(self, key):
+        s = Stack()
+        cur_node = self.root
+        while cur_node:
+            s.push(cur_node)
+            if key > cur_node.key:
+                cur_node = cur_node.right
+            elif key < cur_node.key:
+                cur_node = cur_node.left
+            elif key == cur_node.key:
+                break
+        return s
+
     def insert(self, key):
         new_node = AVLNode(key)
 
