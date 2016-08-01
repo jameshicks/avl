@@ -109,20 +109,6 @@ class AVLNode(object):
     def is_balanced(self):
         return -1 <= self.balance <= 1
 
-    def _traverse_forward(self):
-        if self.left is not None:
-            yield from self.left._traverse_forward()
-        yield self
-        if self.right is not None:
-            yield from self.right._traverse_forward()
-
-    def _traverse_reverse(self):
-        if self.right is not None:
-            yield from self.right._traverse_reverse()
-        yield self
-        if self.left is not None:
-            yield from self.left._traverse_reverse()
-
 
 class AVLTree(object):
 
@@ -142,9 +128,33 @@ class AVLTree(object):
             return
 
         if reverse:
-            yield from self.root._traverse_reverse()
+            yield from self._traverse_reverse()
         else:
-            yield from self.root._traverse_forward()
+            yield from self._traverse()
+
+    def _traverse(self):
+        s = Stack()
+        node = self.root
+        while (not s.empty()) or (node is not None):
+            if node is not None:
+                s.push(node)
+                node = node.left
+            else:
+                node = s.pop()
+                yield node 
+                node = node.right
+
+    def _traverse_reverse(self):
+        s = Stack()
+        node = self.root
+        while (not s.empty()) or (node is not None):
+            if node is not None:
+                s.push(node)
+                node = node.right
+            else:
+                node = s.pop()
+                yield node 
+                node = node.left
 
     def size(self):
         return sum(1 for node in self.traverse())
