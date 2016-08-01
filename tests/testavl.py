@@ -279,8 +279,80 @@ def test_traverse():
     assert [x.key for x in tree.traverse()] == list(sorted(keys))
     assert [x.key for x in tree.traverse(reverse=True)] == list(sorted(keys, reverse=True))
 
-def test_selfbalancing():
 
+
+def test_minmax():
+    tree = AVLTree()
+
+    rvals = [10, 5, 3, 18, 2, 100, 4123, 4393014, 49310]
+    for i, rval in enumerate(rvals):
+        print('({}) Inserting {}'.format(i,rval))
+        tree.insert(rval)
+
+    assert tree.min() == 2
+    assert tree.max() == 4393014
+
+    emtree = AVLTree()
+
+def test_del():
+    rvals = [48, 23, 74, 3, 44, 64, 98, 41, 56, 91]
+
+
+    # Delete leaf
+    tree = AVLTree.from_keys([10,5,25,3,8])
+    assert tree.size() == 5
+    assert tree.root.key == 10
+    assert tree.root.left.key, tree.root.right.key == (5,25)
+    assert tree.root.right.is_leaf()
+
+    tree.delete(8)
+    assert tree.root.key == 10
+    assert tree.root.left.key, tree.root.right.key == (5,25)
+    assert tree.root.right.is_leaf()
+    assert tree.root.left.left.key == 3
+    assert tree.root.left.right is None
+    assert 8 not in {x.key for x in tree.traverse()}
+
+    # Delete node with one child
+    tree = AVLTree.from_keys(rvals)
+    tree.delete(64)
+    assert tree.root.right.left.key == 56
+
+    # Symmetric one child case (we need to add another node)
+    tree = AVLTree.from_keys(rvals)
+    tree.insert(45)
+    tree.delete(45)
+    assert tree.root.left.right.right is None
+
+    # Delete two nodes 
+    tree = AVLTree.from_keys([10, 5, 25, 3, 8])
+    assert tree.root.key == 10
+    assert tree.root.left.key == 5
+    assert tree.root.right.key == 25
+    assert tree.root.left.left.key == 3
+
+    tree.delete(5)
+    assert tree.root.key == 10
+    assert tree.root.left.key == 3
+
+    emtree = AVLTree()
+    assert_raises(KeyError, emtree.delete, 1)
+
+def test_intersect():
+    t1 = AVLTree.from_keys([1, 3, 5, 7, 9])
+    t2 = AVLTree.from_keys([3,6,7])
+
+    t_intersect = t1.intersection(t2)
+    assert [x.key for x in t_intersect.traverse()] == [3,7]
+
+def test_union():
+    t1 = AVLTree.from_keys([1, 3, 5, 7, 9])
+    t2 = AVLTree.from_keys([3,6,7])
+
+    t_union = t1.union(t2)
+    assert [x.key for x in t_union.traverse()] == [1,3,5,6,7,9] 
+
+def test_selfbalancing():
     tree = AVLTree()
     rvals = [7680, 1027, 2564, 4103, 6671, 4118, 5143, 6680, 5144, 5146, 6682, 
              1560, 31, 2079, 546, 4643, 3625, 6188, 4656, 9776, 7732, 1591, 
@@ -303,86 +375,24 @@ def test_selfbalancing():
 
     # rvals = [10, 5, 3, 18, 2]
     for i, rval in enumerate(rvals):
-        print('({}) Inserting {}'.format(i,rval))
+        # print('({}) Inserting {}'.format(i,rval))
         tree.insert(rval)
 
 
     for node in tree.traverse():
-
         assert node.verify()
+
     assert tree.find_node(31).key == 31
     assert tree.find_node(6973).key == 6973
     assert tree.find_node(9015).key == 9015
     assert tree.size() == len(rvals)
     print(tree.size())
 
-def test_minmax():
-    tree = AVLTree()
+    for k in [5409, 3875, 1315, 5418, 1323, 1838]:
+        tree.delete(k)
+        for x in tree.traverse():
+            assert x.verify()
 
-    rvals = [10, 5, 3, 18, 2, 100, 4123, 4393014, 49310]
-    for i, rval in enumerate(rvals):
-        print('({}) Inserting {}'.format(i,rval))
-        tree.insert(rval)
-
-    assert tree.min() == 2
-    assert tree.max() == 4393014
-
-    emtree = AVLTree()
-
-def test_del():
-    rvals = [48, 23, 74, 3, 44, 64, 98, 41, 56, 91]
-
-
-    # Delete leaf
-    tree = AVLTree.from_keys(rvals)
-    assert tree.size() == len(rvals)
-    assert tree.root.right.left.key == 64
-    assert tree.root.right.left.left.key == 56    
-    tree.delete(56)
-
-    assert tree.size() == len(rvals) - 1
-    assert tree.root.right.left.key == 64
-    assert tree.root.right.left.is_leaf() 
-
-    # Delete node with one child
-    tree = AVLTree.from_keys(rvals)
-    tree.delete(64)
-    assert tree.root.right.left.key == 56
-
-    # Symmetric one child case (we need to add another node)
-    tree = AVLTree.from_keys(rvals)
-    tree.insert(45)
-    tree.delete(45)
-    assert tree.root.left.right.right is None
-
-    # Delete two nodes 
-    tree = AVLTree.from_keys([10, 5, 25, 3, 8])
-    assert tree.root.key == 10
-    assert tree.root.left.key == 5
-    assert tree.root.right.key == 25
-    assert tree.root.left.left.key == 3
-
-    tree.delete(5)
-    assert tree.root.key == 10
-    assert tree.root.left.key == 8
-
-    emtree = AVLTree()
-    assert_raises(KeyError, emtree.delete, 1)
-
-def test_intersect():
-    t1 = AVLTree.from_keys([1, 3, 5, 7, 9])
-    t2 = AVLTree.from_keys([3,6,7])
-
-    t_intersect = t1.intersection(t2)
-    assert [x.key for x in t_intersect.traverse()] == [3,7]
-
-def test_union():
-    t1 = AVLTree.from_keys([1, 3, 5, 7, 9])
-    t2 = AVLTree.from_keys([3,6,7])
-
-    t_union = t1.union(t2)
-    assert [x.key for x in t_union.traverse()] == [1,3,5,6,7,9] 
-    
 if __name__ == '__main__':
 
     test_right_rotation()

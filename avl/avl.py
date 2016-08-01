@@ -27,6 +27,9 @@ class Stack(object):
         self.front = popped.following
         return popped.obj
 
+    def peek(self):
+        return self.front.obj
+
     def empty(self):
         return self.front is None
 
@@ -185,8 +188,8 @@ class AVLTree(object):
             elif key < cur_node.key:
                 cur_node = cur_node.left
             elif key == cur_node.key:
-                break
-        return s
+                return s
+        raise KeyError
 
     def path_to_node(self, key):
         s = self.path_to_root(key)
@@ -228,6 +231,7 @@ class AVLTree(object):
 
     def rebalance_node(self, node):
         node.update_height()
+        print('Rebalancing {}'.format())
         if node.is_balanced():
             return
 
@@ -254,83 +258,102 @@ class AVLTree(object):
         if node is self.root:
             self.root = new_root
 
+
     def delete(self, key):
-        if not self.root:
-            raise KeyError('Node not found')
+        if self.root is None:
+            raise KeyError('Tree is empty')
 
-        def is_root(node):
-            return node.parent is None
+        ancestors = self.path_to_root(key)
+        node = ancestors.pop()
 
-        node = self.find_node(key)
 
         if node.is_leaf():
-            # No children
-            ancestor = node.parent
+            self.delleaf(node, ancestors)
+        elif node.right is None:
+            self.del1childl(node, ancestors)
+        elif node.left is None:
+            self.del1childr(node, ancestors)
+        else:
+            self.del2child(node, ancestors)
 
-            if is_root(node):
-                self.root = None
-                return
+    def delleaf(self, node, ancestors):
+        print('delleaf: {}'.format(node))
+        ancestor = ancestors.peek()
+        if node is self.root:
+            self.root = None
+            return
 
-            if node.key > ancestor.key:
-                ancestor.right = None
-            else:
-                ancestor.left = None
+        elif node.key > ancestor.key:
+            ancestor.right = None
+        else: 
+            ancestor.left = None
 
-        elif node.left is not None and node.right is None:
-            # One child A
-            ancestor = node.parent
-            child = node.left
+        for ancestor in ancestors:
+            self.rebalance_node(ancestor)
 
-            if is_root(node):
-                self.root = child
-                return
+    def del1childl(self, node, ancestors):
+        print('del1childl: {}'.format(node))
+        if self.root is node:
+            self.root = node.left
+            node.left.update_height()
+            return
 
+        ancestor = ancestors.peek()
+        child = node.left
+        child.parent = ancestor
+        if child.key > ancestor.key:
+            ancestor.right = child
+        else:
             ancestor.left = child
 
-        elif node.left is None and node.right is not None:
-            # One child B: move the
-            ancestor = node.parent
-            child = node.right
-
-            if is_root(node):
-                self.root = child
-                return
-            ancestor.right = child
-
-        else:
-            # 2 Children
-            successor = node
-            while successor.right:
-                successor = successor.right
-
-            print('Successor is {}'.format(successor))
-
-            ancestor = successor.parent
-            successor.parent = node.parent
-
-            if node.parent is not None:
-                if node is node.parent.left:
-                    node.parent.left = successor
-                else:
-                    node.parent.right = successor
-
-            # The max key on the left side will always be a right leaf
-            ancestor.right = None
-
-            if is_root(node):
-                self.root = successor
-
-            successor.children = node.children
-
-            if successor.left is not None:
-                successor.left.parent = self
-
-            if successor.right is not None:
-                successor.right.parent = self
-
-        while ancestor:
+        for ancestor in ancestors:
             self.rebalance_node(ancestor)
-            ancestor = ancestor.parent
+
+    def del1childr(self, node, ancestors):
+        print('del1childr: {}'.format(node))
+        if self.root is node:
+            self.root = node.right
+            node.right.update_height()
+        
+        ancestor = ancestors.peek()
+        child = node.right    
+        child.parent = ancestor
+        if child.key > ancestor.key:
+            ancestor.right = child
+        else:
+            ancestor.left = child
+
+        for ancestor in ancestors:
+            self.rebalance_node(ancestor)
+
+    def del2child(self, node, ancestors):
+        print('del2child: {}'.format(node))
+        # Find a replacement for the node to be deleted
+        replacement = node.left
+        while replacement.right:
+            replacement = replacement.right
+
+        print('Replacement is {}'.format(replacement))
+        path_to_replacement = self.path_to_root(replacement.key)
+        path_to_replacement.pop() # Remove replacement from stack
+
+        self.delete(replacement.key)
+
+        # The parent of the node to be deleted
+        direct_ancestor = ancestors.peek()
+                
+        replacement.children = node.children 
+        replacement.parent = direct_ancestor
+        if node is self.root:
+            self.root = replacement
+        
+        elif replacement.key > direct_ancestor.key:
+            direct_ancestor.right = replacement
+        else:
+            direct_ancestor.left = replacement
+
+        for ancestor in path_to_replacement:
+            self.rebalance_node(ancestor)
 
     def min_node(self, start=None):
         if not self.root:
