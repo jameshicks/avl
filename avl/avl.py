@@ -194,7 +194,7 @@ class AVLTree(object):
                 node = node.left
             elif key > node.key:
                 node = node.right
-        raise KeyError('Node not found!')
+        raise KeyError('Key not found: {}'.format(key))
 
     def path_to_root(self, key):
         s = Stack()
@@ -207,7 +207,7 @@ class AVLTree(object):
                 cur_node = cur_node.left
             elif key == cur_node.key:
                 return s
-        raise KeyError
+        raise KeyError('Node not found'.format(key))
 
     def path_to_node(self, key):
         s = self.path_to_root(key)
@@ -239,7 +239,7 @@ class AVLTree(object):
                     new_node.parent = cur_node
                     break
             else:
-                raise ValueError('fart')
+                raise ValueError("Can't add node for key: {}".format(key))
 
         parent = new_node
 
