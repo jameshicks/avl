@@ -373,9 +373,7 @@ def test_selfbalancing():
              8654, 979, 7637, 6101, 8150, 8664, 7642, 3035, 2525, 480, 2020, 
              5092, 4071, 1512, 3567, 2032, 6132, 4086, 7161, 4091, 1533]
 
-    # rvals = [10, 5, 3, 18, 2]
     for i, rval in enumerate(rvals):
-        # print('({}) Inserting {}'.format(i,rval))
         tree.insert(rval)
 
 
@@ -388,7 +386,7 @@ def test_selfbalancing():
     assert tree.size() == len(rvals)
     print(tree.size())
 
-    for k in [5409, 3875, 1315, 5418, 1323, 1838]:
+    for k in [5409, 3875, 1315, 5418, 1323, 1838, 7103, 6082, 963, 6084]:
         tree.delete(k)
         for x in tree.traverse():
             assert x.verify()

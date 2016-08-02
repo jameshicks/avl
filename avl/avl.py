@@ -231,7 +231,7 @@ class AVLTree(object):
 
     def rebalance_node(self, node):
         node.update_height()
-        print('Rebalancing {}'.format())
+
         if node.is_balanced():
             return
 
@@ -277,7 +277,6 @@ class AVLTree(object):
             self.del2child(node, ancestors)
 
     def delleaf(self, node, ancestors):
-        print('delleaf: {}'.format(node))
         ancestor = ancestors.peek()
         if node is self.root:
             self.root = None
@@ -292,7 +291,6 @@ class AVLTree(object):
             self.rebalance_node(ancestor)
 
     def del1childl(self, node, ancestors):
-        print('del1childl: {}'.format(node))
         if self.root is node:
             self.root = node.left
             node.left.update_height()
@@ -310,7 +308,6 @@ class AVLTree(object):
             self.rebalance_node(ancestor)
 
     def del1childr(self, node, ancestors):
-        print('del1childr: {}'.format(node))
         if self.root is node:
             self.root = node.right
             node.right.update_height()
@@ -327,13 +324,11 @@ class AVLTree(object):
             self.rebalance_node(ancestor)
 
     def del2child(self, node, ancestors):
-        print('del2child: {}'.format(node))
         # Find a replacement for the node to be deleted
         replacement = node.left
         while replacement.right:
             replacement = replacement.right
 
-        print('Replacement is {}'.format(replacement))
         path_to_replacement = self.path_to_root(replacement.key)
         path_to_replacement.pop() # Remove replacement from stack
 
@@ -344,6 +339,8 @@ class AVLTree(object):
                 
         replacement.children = node.children 
         replacement.parent = direct_ancestor
+        replacement.update_height()
+
         if node is self.root:
             self.root = replacement
         
