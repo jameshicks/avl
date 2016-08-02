@@ -126,6 +126,18 @@ class AVLTree(object):
 
         return tree
 
+    def __contains__(self, key):
+        node = self.root
+        while node:
+            if key > node.key:
+                node = node.right
+            elif key < node.key:
+                node = node.left
+            elif key == node.key:
+                return True
+
+        return False
+        
     def traverse(self, reverse=False):
         if not self.root:
             return

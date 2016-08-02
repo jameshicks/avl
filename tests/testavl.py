@@ -391,6 +391,16 @@ def test_selfbalancing():
         for x in tree.traverse():
             assert x.verify()
 
+def test_contains():
+    tree = AVLTree.from_keys([10, 5, 8, 3, 20])
+    assert 20 in tree
+    assert 10 in tree
+    assert 15 not in tree
+    assert -1000 not in tree
+
+    emtree = AVLTree()
+    assert 1 not in emtree
+
 if __name__ == '__main__':
 
     test_right_rotation()
