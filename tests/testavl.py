@@ -391,7 +391,8 @@ def test_selfbalancing():
         for x in tree.traverse():
             assert x.verify()
 
-def test_contains():
+def test_special():
+    # __contains__
     tree = AVLTree.from_keys([10, 5, 8, 3, 20])
     assert 20 in tree
     assert 10 in tree
@@ -400,6 +401,17 @@ def test_contains():
 
     emtree = AVLTree()
     assert 1 not in emtree
+
+    # __nonzero__
+    if not tree:
+        assert False
+
+    if emtree:
+        assert False
+
+    # __len__
+    assert len(emtree) == 0
+    assert len(tree) == 5
 
 if __name__ == '__main__':
 

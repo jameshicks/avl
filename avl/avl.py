@@ -137,7 +137,13 @@ class AVLTree(object):
                 return True
 
         return False
-        
+
+    def __nonzero__(self):
+        return self.root is None
+
+    def __len__(self):
+        return self.size()
+
     def traverse(self, reverse=False):
         if not self.root:
             return
