@@ -334,6 +334,7 @@ def test_del():
     tree.delete(5)
     assert tree.root.key == 10
     assert tree.root.left.key == 3
+    assert_raises(KeyError, tree.delete, -900)
 
     emtree = AVLTree()
     assert_raises(KeyError, emtree.delete, 1)
